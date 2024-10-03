@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+env/
+# Jupyter Notebook
+.ipynb_checkpoints
+# Pytest
+.pytest_cache/
+# Coverage reports
+htmlcov/
+coverage.xml
+.coverage
+# mypy
+.mypy_cache/
+# Cython debug symbols
+cython_debug/
+# IDE settings
+.idea/
+.vscode/
+*.swp
+node_modules/
