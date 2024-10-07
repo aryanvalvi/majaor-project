@@ -7,34 +7,28 @@ app.use(cors()); // Enable CORS
 app.use(express.json()); // Middleware to parse JSON requests
 
 // Endpoint to get historical stock data from Yahoo Finance
-app.get("/historical/:symbol", async (req, res) => {
+app.get("/historicall/:symbol", async (req, res) => {
   const symbol = req.params.symbol;
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}.NS?range=1mo&interval=1d`;
 
   try {
-    const response = await axios.get(
-      `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?range=1d&interval=1d`
-    );
+    const response = await axios.get(url);
+    const chartData = response.data.chart.result[0];
+    const timestamps = chartData.timestamp;
+    const quote = chartData.indicators.quote[0];
 
-    // Check if there's an error in the response
-    if (response.data.chart.result.length === 0) {
-      return res.status(400).json({ error: "Invalid stock symbol." });
-    }
-
-    // Extract the historical data
-    const historicalData = response.data.chart.result[0];
-    const timestamps = historicalData.timestamp;
-    const indicators = historicalData.indicators.adjclose[0].adjclose;
-
-    // Combine timestamps and indicators into an array
-    const historicalDataArray = timestamps.map((timestamp, index) => ({
-      date: new Date(timestamp * 1000).toISOString().split("T")[0],
-      close: indicators[index],
+    const candlestickData = timestamps.map((time, i) => ({
+      timestamp: new Date(time * 1000).toLocaleDateString(),
+      open: quote.open[i],
+      high: quote.high[i],
+      low: quote.low[i],
+      close: quote.close[i],
     }));
 
-    res.json(historicalDataArray); // Return the historical data
-  } catch (error) {
-    console.error("Error fetching historical data:", error.message);
-    res.status(500).send("Error fetching historical data");
+    res.json(candlestickData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch historical data" });
   }
 });
 
