@@ -1,0 +1,62 @@
+/* Main container for the portfolio section */
+.portfolio-container {
+  padding: 20px;
+  background-color: #12122e;
+  color: #ffffff;
+  font-family: "Arial", sans-serif;
+}
+
+/* Each stock item box styling */
+.portfolio-item {
+  background-color: #1f1f33;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Flex container for the current prices and percentage changes */
+.price-percentage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+/* Paragraphs inside the flex container */
+.price-percentage-row p {
+  margin: 0 10px;
+  color: #ffffff;
+}
+
+/* Styles for positive percentage changes */
+.positive-change {
+  color: #6dfb6d;
+}
+
+/* Styles for negative percentage changes */
+.negative-change {
+  color: #ff4f4f;
+}
+
+/* General heading styles */
+h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Updated company name heading style */
+h3 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  color: #b9c6ff;
+}
+
+/* General paragraph text styling */
+p {
+  font-size: 1rem;
+  margin: 5px 0;
+}

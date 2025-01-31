@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+.Home {
+  background: url("./Home.jpg");
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  background-position: center;
+}
+
+.UL {
+  padding: 40px;
+  display: flex;
+  color: white;
+  justify-content: space-between;
+  list-style: none;
+}
+.right {
+  li {
+    margin-right: 30px;
+  }
+  display: flex;
+}
+.left {
+  font-size: 20px;
+}
+
+.App {
+  background: url("./Home2.jpg");
+  background-size: cover;
+  width: 100%;
+  height: auto;
+  background-position: center;
+  color: white;
+}
+.HeaderStockName {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  letter-spacing: 0.4cm;
+  font-size: 50px;
+  font-weight: 500;
+  padding: 100px;
+}
+.form {
+  display: flex;
+  .trading {
+    width: 100%;
+    height: 200px;
+  }
+}
+
+.left-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  box-sizing: border-box;
+
+  label {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  input {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+}
+.historical {
+  h3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: 300;
+    margin-bottom: 40px;
+  }
+  display: flex;
+  margin-top: 90px;
+  justify-content: center;
+  align-items: center;
+}
