@@ -12,8 +12,21 @@
   "dependencies": {
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
+    "cloudinary": "^2.5.0",
+    "config": "^3.3.12",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
-    "express": "^4.21.0",
-    "python-shell": "^5.0.0"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.0",
+    "gpg": "^0.6.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.6",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.6.0",
+    "passport-google-oauth20": "^2.0.0",
+    "python-shell": "^5.0.0",
+    "yahoo-finance2": "^2.13.3"
   }
 }

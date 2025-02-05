@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import "./App.scss";
+import React, {useEffect, useState} from "react"
+import "./App.scss"
 
 function App() {
   const [features, setFeatures] = useState({
@@ -8,41 +8,41 @@ function App() {
     Low: "",
     Close: "",
     Volume: "",
-  });
-  const [stockSymbol, setStockSymbol] = useState("");
-  const [prediction, setPrediction] = useState(null);
-  const [historicalData, setHistoricalData] = useState([]);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  })
+  const [stockSymbol, setStockSymbol] = useState("")
+  const [prediction, setPrediction] = useState(null)
+  const [historicalData, setHistoricalData] = useState([])
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (historicalData.length > 0) {
-      initTradingViewChart();
+      initTradingViewChart()
     }
-  }, [historicalData]);
+  }, [historicalData])
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setFeatures({
       ...features,
       [e.target.name]: e.target.value,
-    });
-  };
+    })
+  }
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
-    setLoading(true);
+  const handleSubmit = async event => {
+    event.preventDefault()
+    setError("")
+    setLoading(true)
 
     const allFieldsFilled =
-      Object.values(features).every((feature) => feature !== "") && stockSymbol;
+      Object.values(features).every(feature => feature !== "") && stockSymbol
     if (!allFieldsFilled) {
-      setError("Please enter all features and stock symbol.");
-      setLoading(false);
-      return;
+      setError("Please enter all features and stock symbol.")
+      setLoading(false)
+      return
     }
 
     try {
-      const response = await fetch("http://localhost:5000/predict", {
+      const response = await fetch("http://localhost:5002/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,44 +54,43 @@ function App() {
           Close: parseFloat(features.Close),
           Volume: parseFloat(features.Volume),
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Network response was not ok")
       }
 
-      const result = await response.json();
-      setPrediction(result.predictedPrice);
+      const result = await response.json()
+      setPrediction(result.predictedPrice)
 
       // Fetch historical data after prediction
-      await fetchHistoricalData(stockSymbol);
+      await fetchHistoricalData(stockSymbol)
     } catch (err) {
-      console.error(err);
-      setError("Error getting prediction. Try again later."); // Display error message
+      console.error(err)
+      setError("Error getting prediction. Try again later.")
     } finally {
-      setLoading(false); // Reset loading state
+      setLoading(false)
     }
-  };
+  }
 
-  const fetchHistoricalData = async (symbol) => {
+  const fetchHistoricalData = async symbol => {
     try {
       const response = await fetch(
-        `http://localhost:5000/historicall/${symbol}`,
+        `http://localhost:5002/historicall/${symbol}`,
         {
           method: "GET",
         }
-      );
+      )
       if (!response.ok) {
-        throw new Error("Failed to fetch historical data");
+        throw new Error("Failed to fetch historical data")
       }
-      const data = await response.json();
-      console.log(data);
-      setHistoricalData(data); // Set historical data
+      const data = await response.json()
+      setHistoricalData(data)
     } catch (error) {
-      console.error("Error fetching historical data:", error);
-      setError("Error fetching historical data."); // Display error message
+      console.error("Error fetching historical data:", error)
+      setError("Error fetching historical data.")
     }
-  };
+  }
 
   const initTradingViewChart = () => {
     new window.TradingView.widget({
@@ -107,49 +106,39 @@ function App() {
       toolbar_bg: "#f1f3f6",
       enable_publishing: false,
       allow_symbol_change: true,
-      withdateranges: true, // Allows users to change date ranges
+      withdateranges: true,
       hide_side_toolbar: false,
       drawings_access: {
-        type: "all_symbols", // Change to "all_symbols" for more tools
+        type: "all_symbols",
         tools: [
-          { name: "Trend Line" },
-          { name: "Horizontal Line" },
-          { name: "Vertical Line" },
-          { name: "Fibonacci Retracement" },
-          { name: "Text" },
+          {name: "Trend Line"},
+          {name: "Horizontal Line"},
+          {name: "Vertical Line"},
+          {name: "Fibonacci Retracement"},
+          {name: "Text"},
         ],
-      }, // Enables drawing tools
-      studies: [
-        // Add any technical indicators if you want here, for example:
-        "Moving Average",
-      ],
+      },
+      studies: ["Moving Average"],
       datafeed: {
         getBars: (symbol, resolution, from, to, onHistoryCallback) => {
-          const filteredData = historicalData.filter((dataPoint) => {
-            const timestamp = new Date(dataPoint.timestamp).getTime() / 1000;
-            return timestamp >= from && timestamp <= to;
-          });
+          const filteredData = historicalData.filter(dataPoint => {
+            const timestamp = new Date(dataPoint.timestamp).getTime() / 1000
+            return timestamp >= from && timestamp <= to
+          })
 
-          const bars = filteredData.map((dataPoint) => ({
+          const bars = filteredData.map(dataPoint => ({
             time: new Date(dataPoint.timestamp).getTime() / 1000,
             open: dataPoint.open,
             high: dataPoint.high,
             low: dataPoint.low,
             close: dataPoint.close,
-          }));
+          }))
 
-          onHistoryCallback(bars, { noData: bars.length === 0 });
+          onHistoryCallback(bars, {noData: bars.length === 0})
         },
       },
-    });
-  };
-
-  // Calculate average closing price
-  const averagePrice =
-    historicalData.length > 0
-      ? historicalData.reduce((acc, dataPoint) => acc + dataPoint.close, 0) /
-        historicalData.length
-      : 0;
+    })
+  }
 
   return (
     <div className="App">
@@ -161,7 +150,7 @@ function App() {
             <input
               type="text"
               value={stockSymbol}
-              onChange={(e) => setStockSymbol(e.target.value)}
+              onChange={e => setStockSymbol(e.target.value)}
               placeholder="e.g., AAPL, TSLA"
               required
             />
@@ -184,44 +173,12 @@ function App() {
         </div>
         <div className="trading" id="tradingview-chart"></div>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {prediction !== null && (
-        <div>
-          <h2>Predicted Price: {prediction}</h2>
-          {historicalData.length > 0 && (
-            <div className="historical">
-              <div className="L">
-                <h3>Historical Data</h3>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Timestamp</th>
-                      <th>Open</th>
-                      <th>High</th>
-                      <th>Low</th>
-                      <th>Close</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {historicalData.map((dataPoint, index) => (
-                      <tr key={index}>
-                        <td>{dataPoint.timestamp}</td>
-                        <td>{dataPoint.open}</td>
-                        <td>{dataPoint.high}</td>
-                        <td>{dataPoint.low}</td>
-                        <td>{dataPoint.close}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <h3>Average Closing Price: {averagePrice.toFixed(2)}</h3>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+      <div className="predictedPrice">
+        {error && <p style={{color: "red"}}>{error}</p>}
+        {prediction !== null && <h2>Predicted Price: {prediction}</h2>}
+      </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
