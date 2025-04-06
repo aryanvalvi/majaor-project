@@ -1,85 +1,61 @@
 const express = require("express")
 const router = express.Router()
 const passport = require("passport")
-const {
-  addStock,
-  getPortfolio,
-  removeStock,
-} = require("../controller/PortfolioController")
-const {
-  getPortfolioValue,
-  getPortfolioo,
-  addStocck,
-} = require("../controller/yahoo")
+
+// Import from a single controller file to avoid confusion
+const portfolioController = require("../controller/PortfolioController")
+const yahooController = require("../controller/yahoo") // Make sure path is correct
+
+// Test route
 router.get("/test", (req, res) => {
   res.json({Message: "Working"})
 })
 
-//auth login
+// Auth routes
 router.get(
   "/auth/google",
   passport.authenticate("google", {scope: ["profile", "email"]})
 )
-//auth redirect
+
 router.get(
   "/auth/google/redirect",
-  passport.authenticate("google", {
-    failureRedirect: "/",
-  }),
+  passport.authenticate("google", {failureRedirect: "/"}),
   (req, res) => {
-    // console.log(req.user);
-    console.log("Authenticated:", req.user)
     res.redirect("http://localhost:5173")
   }
 )
 
-//auth getuserdata;
+// User routes
 router.get("/getuserdata", (req, res) => {
-  if (req.user) {
-    res.status(200).json({
-      user: req.user,
-    })
-    // console.log("bhadve", req.user);
-  } else {
-    res.json({user: null})
-  }
+  res.json({user: req.user || null})
 })
 
-//auth Logout
 router.get("/auth/logout", (req, res) => {
-  console.log("Logout is called ")
-  req.logout(err => {
-    if (err) {
-      return res.send("Error while logout")
-    }
-    req.session.destroy(err => {
-      if (err) {
-        console.log("Error destryoing session", err)
-      }
-      res.clearCookie("connect.sid"),
-        // res.redirect("http://localhost:3000")
-        res.json({message: "logged out be"})
-      console.log("Logged Out Successfully")
+  req.logout(() => {
+    req.session.destroy(() => {
+      res.clearCookie("connect.sid")
+      res.json({message: "Logged out successfully"})
     })
   })
 })
+
+// Auth middleware
 const authMiddleware = (req, res, next) => {
-  if (req.user) {
-    next()
-  }
+  req.user ? next() : res.status(401).json({message: "Unauthorized"})
 }
 
-router.post("/add", addStock) // Add stock to portfolio
-router.get("/", authMiddleware, getPortfolio) // Get portfolio
-router.delete("/remove", authMiddleware, removeStock)
+// Portfolio routes
+router.post("/add", authMiddleware, portfolioController.addStock)
+router.get("/", authMiddleware, portfolioController.getPortfolio)
+router.delete("/remove", authMiddleware, portfolioController.removeStock)
+
+// Yahoo finance routes
+router.post("/addStock", authMiddleware, yahooController.addStocck) // Fixed
+router.get("/getuserportfolio", authMiddleware, yahooController.getPortfolioo)
+
+// Auth check
 router.get("/check", (req, res) => {
-  if (req.user) {
-    res.json({user: req.user})
-  } else {
-    res.json({user: null})
-  }
+  res.json({user: req.user || null})
 })
 
-router.post("/addStock", addStocck)
-router.get("/getuserportfolio", getPortfolioo)
 module.exports = router
